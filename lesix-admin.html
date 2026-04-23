@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Six — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#c9a84c; --gold-l:#e8c97a;
+  --dark:#0d0d0d; --card:#16191f; --deep:#111318;
+  --border:rgba(201,168,76,0.2); --text:#e8e2d9; --muted:#8a8070;
+  --green:#5dbf8c; --red:#e85d5d; --yellow:#f0b955; --wa:#25d366;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--dark);color:var(--text);font-family:'Outfit',sans-serif;font-weight:300;min-height:100vh;}
+
+/* LOGIN */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(201,168,76,0.05),transparent);}
+.lbox{background:var(--card);border:1px solid var(--border);padding:52px 48px;width:360px;text-align:center;}
+.llogo{font-family:'Cormorant Garamond',serif;font-size:2.2rem;letter-spacing:6px;color:var(--gold);margin-bottom:4px;}
+.lsub{font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:36px;}
+.linput{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);padding:13px 16px;font-family:'Outfit',sans-serif;font-size:0.9rem;outline:none;margin-bottom:16px;transition:border-color 0.3s;}
+.linput:focus{border-color:var(--gold);}
+.lbtn{width:100%;background:var(--gold);color:var(--dark);border:none;padding:14px;font-family:'Outfit',sans-serif;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-weight:500;transition:background 0.3s;}
+.lbtn:hover{background:var(--gold-l);}
+.lerr{color:var(--red);font-size:0.72rem;margin-top:12px;display:none;}
+
+/* DASHBOARD */
+#dash{display:none;}
+header{background:rgba(13,13,13,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:16px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.hlogo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;letter-spacing:4px;color:var(--gold);}
+.hright{display:flex;align-items:center;gap:10px;}
+.hbtn{background:transparent;border:1px solid var(--border);padding:8px 16px;font-family:'Outfit',sans-serif;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.hbtn-r{color:var(--gold);} .hbtn-r:hover{background:rgba(201,168,76,0.08);}
+.hbtn-l{color:var(--muted);} .hbtn-l:hover{border-color:var(--red);color:var(--red);}
+.live{display:flex;align-items:center;gap:6px;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--green);}
+.ldot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:lp 2s ease-in-out infinite;}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* TABS */
+.page-tabs{display:flex;border-bottom:2px solid var(--border);padding:0 36px;background:var(--deep);}
+.ptab{padding:14px 24px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:-2px;transition:all 0.3s;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:8px;}
+.ptab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.ptab:hover{color:var(--text);}
+.ptab-badge{background:var(--yellow);color:var(--dark);font-size:0.55rem;padding:2px 7px;border-radius:10px;font-weight:500;}
+.ptab-badge.green{background:var(--green);}
+
+.body{padding:32px 36px;max-width:1200px;margin:0 auto;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px;}
+.sc{background:var(--card);border:1px solid var(--border);padding:22px 18px;text-align:center;transition:border-color 0.3s;}
+.sc:hover{border-color:rgba(201,168,76,0.4);}
+.sn{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;line-height:1;margin-bottom:6px;}
+.sl{font-size:0.58rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+
+/* CONTROLS */
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;flex-wrap:wrap;}
+.ftabs{display:flex;border-bottom:1px solid var(--border);}
+.ft{padding:9px 20px;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:-1px;transition:all 0.3s;font-family:'Outfit',sans-serif;}
+.ft.active{color:var(--gold);border-bottom-color:var(--gold);}
+.ft:hover{color:var(--text);}
+.sbox{background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);padding:9px 14px;font-family:'Outfit',sans-serif;font-size:0.8rem;outline:none;width:210px;transition:border-color 0.3s;}
+.sbox:focus{border-color:var(--gold);}
+.cbtn{background:transparent;border:1px solid rgba(232,93,93,0.3);color:var(--red);padding:9px 16px;font-family:'Outfit',sans-serif;font-size:0.66rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.cbtn:hover{background:rgba(232,93,93,0.08);}
+
+/* CARDS */
+.empty{text-align:center;padding:72px;color:var(--muted);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;border:1px dashed var(--border);}
+.loading{text-align:center;padding:56px;color:var(--muted);font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;}
+
+.rc{background:var(--card);border:1px solid rgba(201,168,76,0.1);padding:20px 22px;margin-bottom:9px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:start;transition:border-color 0.25s,transform 0.2s;}
+.rc:hover{border-color:rgba(201,168,76,0.3);transform:translateX(2px);}
+.rtop{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.rname{font-family:'Cormorant Garamond',serif;font-size:1.2rem;}
+.badge{font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border:1px solid;}
+.bw{color:var(--yellow);border-color:rgba(240,185,85,0.35);background:rgba(240,185,85,0.07);}
+.bo{color:var(--green); border-color:rgba(93,191,140,0.35);background:rgba(93,191,140,0.07);}
+.ba{color:var(--red);   border-color:rgba(232,93,93,0.35); background:rgba(232,93,93,0.07);}
+.bnew{color:var(--yellow);font-size:0.54rem;letter-spacing:2px;text-transform:uppercase;animation:bl 1.2s ease-in-out infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0.2}}
+.rmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:7px 22px;}
+.ml{font-size:0.56rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.mv{font-size:0.82rem;color:var(--text);}
+.mv a{color:var(--gold);text-decoration:none;}
+.mv a:hover{text-decoration:underline;}
+.rnote{grid-column:1/-1;font-size:0.76rem;color:var(--muted);font-style:italic;margin-top:3px;}
+.rts{font-size:0.6rem;color:var(--muted);margin-top:10px;}
+.ract{display:flex;flex-direction:column;gap:7px;min-width:126px;}
+.ab{padding:8px 10px;font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid;font-family:'Outfit',sans-serif;transition:all 0.25s;text-align:center;text-decoration:none;display:block;background:transparent;}
+.a-ok{color:var(--green);border-color:rgba(93,191,140,0.4);}  .a-ok:hover{background:rgba(93,191,140,0.1);}
+.a-off{color:var(--red);  border-color:rgba(232,93,93,0.4);}  .a-off:hover{background:rgba(232,93,93,0.1);}
+.a-rst{color:var(--muted);border-color:rgba(138,128,112,0.3);font-size:0.56rem;} .a-rst:hover{color:var(--text);}
+.a-del{color:var(--muted);border-color:rgba(138,128,112,0.22);} .a-del:hover{color:var(--red);border-color:rgba(232,93,93,0.3);}
+.a-wa{color:var(--wa);border-color:rgba(37,211,102,0.4);}  .a-wa:hover{background:rgba(37,211,102,0.1);}
+.a-call{color:var(--gold);border-color:rgba(201,168,76,0.4);} .a-call:hover{background:rgba(201,168,76,0.08);}
+
+/* REVIEW CARDS */
+.rvcard{background:var(--card);border:1px solid rgba(201,168,76,0.1);padding:20px 22px;margin-bottom:9px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;transition:border-color 0.25s;}
+.rvcard:hover{border-color:rgba(201,168,76,0.28);}
+
+/* EXPORT BTN */
+.export-btn{background:transparent;border:1px solid rgba(201,168,76,0.4);color:var(--gold);padding:9px 18px;font-family:'Outfit',sans-serif;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.export-btn:hover{background:rgba(201,168,76,0.08);}
+
+@media(max-width:700px){
+  header{padding:14px 16px;} .body{padding:20px 16px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .rc,.rvcard{grid-template-columns:1fr;} .ract{flex-direction:row;flex-wrap:wrap;}
+  .ctrl{flex-direction:column;align-items:stretch;} .sbox{width:100%;}
+  .page-tabs{padding:0 16px;overflow-x:auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lbox">
+    <div class="llogo">LE SIX</div>
+    <div class="lsub">Panel Administration</div>
+    <div style="font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:left;margin-bottom:8px;">Mot de passe</div>
+    <input type="password" id="pwd" class="linput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="lbtn" onclick="doLogin()">Accéder au panel</button>
+    <div class="lerr" id="lerr">Mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash">
+  <header>
+    <div class="hlogo">LE SIX <span style="font-size:0.58rem;letter-spacing:3px;color:var(--muted);font-family:'Outfit',sans-serif;text-transform:uppercase;">Admin</span></div>
+    <div class="hright">
+      <span id="hstats" style="font-size:0.62rem;color:var(--muted);"></span>
+      <span class="live"><span class="ldot"></span>Live</span>
+      <button class="hbtn hbtn-r" onclick="loadAll()">↻ Actualiser</button>
+      <button class="hbtn export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="hbtn hbtn-l" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <!-- PAGE TABS -->
+  <div class="page-tabs">
+    <button class="ptab active" onclick="showPage(this,'res')">
+      Réservations <span class="ptab-badge" id="badge-res">0</span>
+    </button>
+    <button class="ptab" onclick="showPage(this,'rv')">
+      Avis Clients <span class="ptab-badge green" id="badge-rv">0</span>
+    </button>
+  </div>
+
+  <div class="body">
+
+    <!-- ══════ PAGE RESERVATIONS ══════ -->
+    <div id="page-res">
+      <!-- Stats -->
+      <div class="stats">
+        <div class="sc"><div class="sn" id="s-all" style="color:var(--gold);">—</div><div class="sl">Total</div></div>
+        <div class="sc"><div class="sn" id="s-wait" style="color:var(--yellow);">—</div><div class="sl">En attente</div></div>
+        <div class="sc"><div class="sn" id="s-ok"   style="color:var(--green);">—</div><div class="sl">Confirmées</div></div>
+        <div class="sc"><div class="sn" id="s-off"  style="color:var(--red);">—</div><div class="sl">Annulées</div></div>
+      </div>
+      <!-- Controls -->
+      <div class="ctrl">
+        <div class="ftabs">
+          <button class="ft active" onclick="setRF(this,'tous')">Toutes</button>
+          <button class="ft" onclick="setRF(this,'en_attente')">En attente</button>
+          <button class="ft" onclick="setRF(this,'confirme')">Confirmées</button>
+          <button class="ft" onclick="setRF(this,'annule')">Annulées</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input type="text" class="sbox" id="rsq" placeholder="Nom ou téléphone…" oninput="renderRes()">
+          <button class="cbtn" onclick="clearRes()">Tout effacer</button>
+        </div>
+      </div>
+      <div id="res-list"><div class="loading">Chargement…</div></div>
+    </div>
+
+    <!-- ══════ PAGE AVIS ══════ -->
+    <div id="page-rv" style="display:none;">
+      <!-- Stats avis -->
+      <div class="stats" style="grid-template-columns:repeat(3,1fr);">
+        <div class="sc"><div class="sn" id="rv-total" style="color:var(--gold);">—</div><div class="sl">Total avis</div></div>
+        <div class="sc"><div class="sn" id="rv-avg"   style="color:var(--yellow);">—</div><div class="sl">Note moyenne</div></div>
+        <div class="sc"><div class="sn" id="rv-5"     style="color:var(--green);">—</div><div class="sl">Avis 5 étoiles</div></div>
+      </div>
+      <!-- Controls -->
+      <div class="ctrl">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" class="sbox" id="rvsq" placeholder="Rechercher un avis…" oninput="renderRv()">
+          <select id="rvstar" onchange="renderRv()" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text);padding:9px 12px;font-family:'Outfit',sans-serif;font-size:0.78rem;outline:none;">
+            <option value="0">Toutes les notes</option>
+            <option value="5">★★★★★ 5 étoiles</option>
+            <option value="4">★★★★ 4 étoiles</option>
+            <option value="3">★★★ 3 étoiles</option>
+            <option value="2">★★ 2 étoiles</option>
+            <option value="1">★ 1 étoile</option>
+          </select>
+        </div>
+        <button class="cbtn" onclick="clearRv()">Tout effacer</button>
+      </div>
+      <div id="rv-list"><div class="loading">Chargement…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PASS = 'lesix2024';
+let resData = [], rvData = [], resFilter = 'tous', autoT = null;
+
+/* ── STORAGE ── */
+function getRD()  { try{const v=localStorage.getItem('lesix_reservations');return Promise.resolve(v?JSON.parse(v):[]);}catch{return Promise.resolve([]);} }
+function setRD(d) { try{localStorage.setItem('lesix_reservations',JSON.stringify(d));return Promise.resolve();}catch(e){alert('Erreur sauvegarde');return Promise.reject(e);} }
+function getAD()  { try{const v=localStorage.getItem('lesix_reviews');return Promise.resolve(v?JSON.parse(v):[]);}catch{return Promise.resolve([]);} }
+function setAD(d) { try{localStorage.setItem('lesix_reviews',JSON.stringify(d));return Promise.resolve();}catch(e){alert('Erreur sauvegarde');return Promise.reject(e);} }
+
+/* ── AUTH ── */
+function doLogin() {
+  if (document.getElementById('pwd').value === PASS) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    loadAll();
+    autoT = setInterval(loadAll, 15000);
+  } else {
+    document.getElementById('lerr').style.display = 'block';
+    document.getElementById('pwd').value = '';
+  }
+}
+function doLogout() {
+  clearInterval(autoT);
+  document.getElementById('dash').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+  document.getElementById('pwd').value = '';
+  document.getElementById('lerr').style.display = 'none';
+}
+
+/* ── PAGES ── */
+function showPage(btn, page) {
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('page-res').style.display = page==='res'?'block':'none';
+  document.getElementById('page-rv').style.display  = page==='rv' ?'block':'none';
+}
+
+/* ── LOAD ── */
+async function loadAll() {
+  resData = await getRD();
+  rvData  = await getAD();
+  renderRes();
+  renderRv();
+  updateBadges();
+}
+
+function updateBadges() {
+  const waiting = resData.filter(r=>r.status==='en_attente').length;
+  document.getElementById('badge-res').textContent = resData.length;
+  document.getElementById('badge-rv').textContent  = rvData.length;
+  document.getElementById('hstats').innerHTML =
+    `<strong style="color:var(--gold)">${resData.length}</strong> rés. &nbsp;·&nbsp; <strong style="color:var(--yellow)">${waiting}</strong> en attente &nbsp;·&nbsp; <strong style="color:var(--green)">${rvData.length}</strong> avis`;
+}
+
+/* ── RESERVATIONS ── */
+function setRF(btn, f) {
+  resFilter = f;
+  document.querySelectorAll('.ft').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRes();
+}
+async function setStatus(id, s) {
+  const r = resData.find(x=>x.id===id);
+  if(r){r.status=s; await setRD(resData); renderRes(); updateBadges();}
+}
+async function delRes(id) {
+  if(!confirm('Supprimer ?')) return;
+  resData = resData.filter(x=>x.id!==id);
+  await setRD(resData); renderRes(); updateBadges();
+}
+async function clearRes() {
+  if(!confirm('Effacer TOUTES les réservations ? Irréversible.')) return;
+  resData=[]; await setRD([]); renderRes(); updateBadges();
+}
+
+function renderRes() {
+  const total = resData.length;
+  const wait  = resData.filter(r=>r.status==='en_attente').length;
+  const ok    = resData.filter(r=>r.status==='confirme').length;
+  const off   = resData.filter(r=>r.status==='annule').length;
+  document.getElementById('s-all').textContent  = total;
+  document.getElementById('s-wait').textContent = wait;
+  document.getElementById('s-ok').textContent   = ok;
+  document.getElementById('s-off').textContent  = off;
+
+  const q = (document.getElementById('rsq').value||'').toLowerCase();
+  let d = resFilter==='tous'?[...resData]:resData.filter(r=>r.status===resFilter);
+  if(q) d = d.filter(r=>r.name.toLowerCase().includes(q)||(r.phone||'').includes(q));
+
+  const el = document.getElementById('res-list');
+  if(!d.length){el.innerHTML='<div class="empty">Aucune réservation</div>';return;}
+  const now = Date.now();
+  el.innerHTML = d.map(r=>{
+    const isNew=(now-r.id)<3600000&&r.status==='en_attente';
+    const bc=r.status==='confirme'?'bo':r.status==='annule'?'ba':'bw';
+    const bl=r.status==='confirme'?'Confirmée':r.status==='annule'?'Annulée':'En attente';
+    const wa=(r.phone||'').replace(/[^0-9]/g,'');
+    return `<div class="rc">
+  <div>
+    <div class="rtop">
+      ${isNew?'<span class="bnew">● Nouveau</span>':''}
+      <span class="rname">${r.name}</span>
+      <span class="badge ${bc}">${bl}</span>
+    </div>
+    <div class="rmeta">
+      <div><div class="ml">Téléphone</div><div class="mv"><a href="tel:${r.phone}">${r.phone}</a></div></div>
+      <div><div class="ml">Date</div><div class="mv">${r.date}</div></div>
+      <div><div class="ml">Heure</div><div class="mv">${r.time}</div></div>
+      <div><div class="ml">Personnes</div><div class="mv">${r.guests}</div></div>
+      ${r.msg?`<div style="grid-column:1/-1"><div class="ml">Message</div><div class="rnote">"${r.msg}"</div></div>`:''}
+    </div>
+    <div class="rts">Reçu le ${r.createdAt}</div>
+  </div>
+  <div class="ract">
+    ${r.status!=='confirme'   ?`<button class="ab a-ok"  onclick="setStatus(${r.id},'confirme')">✓ Confirmer</button>`:''}
+    ${r.status!=='annule'     ?`<button class="ab a-off" onclick="setStatus(${r.id},'annule')">✕ Annuler</button>`:''}
+    ${r.status!=='en_attente' ?`<button class="ab a-rst" onclick="setStatus(${r.id},'en_attente')">↩ Attente</button>`:''}
+    <a class="ab a-wa"   href="https://wa.me/${wa}" target="_blank">WhatsApp</a>
+    <a class="ab a-call" href="tel:${r.phone}">Appeler</a>
+    <button class="ab a-del" onclick="delRes(${r.id})">Supprimer</button>
+  </div>
+</div>`;
+  }).join('');
+}
+
+/* ── EXPORT CSV ── */
+function exportCSV() {
+  if(!resData.length){alert('Aucune réservation à exporter.');return;}
+  const cols = ['Nom','Téléphone','Date','Heure','Personnes','Statut','Message','Reçu le'];
+  const rows = resData.map(r=>[
+    `"${r.name}"`,`"${r.phone}"`,`"${r.date}"`,`"${r.time}"`,
+    `"${r.guests}"`,`"${r.status}"`,`"${(r.msg||'').replace(/"/g,"'")}"`,`"${r.createdAt}"`
+  ].join(','));
+  const csv = [cols.join(','), ...rows].join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `lesix_reservations_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+/* ── REVIEWS ── */
+function starsH(n) {
+  return Array.from({length:5},(_,i)=>`<span style="color:${i<n?'var(--gold)':'rgba(201,168,76,0.2)'};">★</span>`).join('');
+}
+async function delRv(id) {
+  if(!confirm('Supprimer cet avis ?')) return;
+  rvData = rvData.filter(x=>x.id!==id);
+  await setAD(rvData); renderRv(); updateBadges();
+}
+async function clearRv() {
+  if(!confirm('Effacer TOUS les avis ? Irréversible.')) return;
+  rvData=[]; await setAD([]); renderRv(); updateBadges();
+}
+
+function renderRv() {
+  const total = rvData.length;
+  const avg   = total ? (rvData.reduce((s,r)=>s+r.stars,0)/total).toFixed(1) : '—';
+  const fives = rvData.filter(r=>r.stars===5).length;
+  document.getElementById('rv-total').textContent = total;
+  document.getElementById('rv-avg').textContent   = total ? avg+'★' : '—';
+  document.getElementById('rv-5').textContent     = fives;
+
+  const q    = (document.getElementById('rvsq').value||'').toLowerCase();
+  const star = parseInt(document.getElementById('rvstar').value)||0;
+  let d = [...rvData];
+  if(q)    d = d.filter(r=>r.name.toLowerCase().includes(q)||r.msg.toLowerCase().includes(q));
+  if(star) d = d.filter(r=>r.stars===star);
+
+  const el = document.getElementById('rv-list');
+  if(!d.length){el.innerHTML='<div class="empty">Aucun avis</div>';return;}
+  el.innerHTML = d.map(r=>`
+<div class="rvcard">
+  <div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;">${r.name}</span>
+      <span style="font-size:1rem;">${starsH(r.stars)}</span>
+      <span style="font-size:0.6rem;color:var(--muted);letter-spacing:1px;">${r.date}</span>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);font-style:italic;">"${r.msg}"</p>
+  </div>
+  <button onclick="delRv(${r.id})" class="ab a-del" style="min-width:90px;">Supprimer</button>
+</div>`).join('');
+}
+</script>
+</body>
+</html>
